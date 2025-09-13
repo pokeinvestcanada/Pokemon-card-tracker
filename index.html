@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Card Import Business Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__content">
+                <h1 class="header__title">Pokemon Card Import Co.</h1>
+                <div class="header__date">
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav__tab nav__tab--active" data-tab="dashboard">Dashboard</button>
+            <button class="nav__tab" data-tab="add-item">Add Item</button>
+            <button class="nav__tab" data-tab="inventory">Inventory</button>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section section--active">
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">💰</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Total Investment</h3>
+                        <div class="kpi-card__value" id="totalInvestment">$0</div>
+                        <div class="kpi-card__progress">
+                            <div class="progress-bar">
+                                <div class="progress-bar__fill" id="investmentProgress"></div>
+                            </div>
+                            <span class="kpi-card__target">Target: $5,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">📈</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Revenue</h3>
+                        <div class="kpi-card__value" id="totalRevenue">$0</div>
+                        <div class="kpi-card__progress">
+                            <div class="progress-bar">
+                                <div class="progress-bar__fill" id="revenueProgress"></div>
+                            </div>
+                            <span class="kpi-card__target">Target: $4,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">💎</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Profit</h3>
+                        <div class="kpi-card__value" id="totalProfit">$0</div>
+                        <div class="kpi-card__progress">
+                            <div class="progress-bar">
+                                <div class="progress-bar__fill" id="profitProgress"></div>
+                            </div>
+                            <span class="kpi-card__target">Target: $1,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">📊</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Profit Margin</h3>
+                        <div class="kpi-card__value" id="profitMargin">0%</div>
+                        <div class="kpi-card__status" id="marginStatus">
+                            <span class="status status--info">Calculating...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">📦</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Items in Stock</h3>
+                        <div class="kpi-card__value" id="itemsInStock">0</div>
+                        <div class="kpi-card__subtitle">Total Quantity</div>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card__icon">✅</div>
+                    <div class="kpi-card__content">
+                        <h3 class="kpi-card__title">Items Sold</h3>
+                        <div class="kpi-card__value" id="itemsSold">28</div>
+                        <div class="kpi-card__subtitle">Turnover: <span id="turnoverRate">66.7%</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="profitMarginChart"></canvas>
+                </div>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="salesTrendChart"></canvas>
+                </div>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="costBreakdownChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Item Section -->
+        <section id="add-item" class="section">
+            <div class="card">
+                <div class="card__header">
+                    <h2>Add New Inventory Item</h2>
+                </div>
+                <div class="card__body">
+                    <form id="addItemForm" class="item-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="itemName">Item Name</label>
+                                <input type="text" id="itemName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="category">Category</label>
+                                <select id="category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Single Card">Single Card</option>
+                                    <option value="Sealed Product">Sealed Product</option>
+                                    <option value="Accessory">Accessory</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="costJpy">Cost (JPY)</label>
+                                <input type="number" id="costJpy" class="form-control" min="0" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="quantity">Quantity</label>
+                                <input type="number" id="quantity" class="form-control" min="1" step="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="marketPrice">Market Price (CAD)</label>
+                                <input type="number" id="marketPrice" class="form-control" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="shippingCost">Shipping Cost (CAD)</label>
+                                <input type="number" id="shippingCost" class="form-control" min="0" step="0.01" value="10.00">
+                            </div>
+                        </div>
+
+                        <!-- Auto-calculated fields -->
+                        <div class="calculated-fields">
+                            <h3>Calculated Costs</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Cost (CAD)</label>
+                                    <input type="text" id="costCad" class="form-control form-control--readonly" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Duty (10%)</label>
+                                    <input type="text" id="dutyCad" class="form-control form-control--readonly" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">HST (13%)</label>
+                                    <input type="text" id="hstCad" class="form-control form-control--readonly" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Total Cost (CAD)</label>
+                                    <input type="text" id="totalCostCad" class="form-control form-control--readonly" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Profit Margin</label>
+                                    <input type="text" id="profitMarginCalc" class="form-control form-control--readonly" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn--primary">Add Item</button>
+                            <button type="button" class="btn btn--secondary" id="resetForm">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inventory Section -->
+        <section id="inventory" class="section">
+            <div class="inventory-header">
+                <h2>Inventory Management</h2>
+                <div class="inventory-actions">
+                    <input type="text" id="searchInventory" class="form-control" placeholder="Search items...">
+                    <button class="btn btn--secondary" id="exportCsv">Export CSV</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="inventory-table" id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th data-sort="item_name">Item Name</th>
+                            <th data-sort="category">Category</th>
+                            <th data-sort="total_cost_cad">Cost (CAD)</th>
+                            <th data-sort="market_price_cad">Market Price</th>
+                            <th data-sort="profit_margin">Profit Margin</th>
+                            <th data-sort="quantity">Quantity</th>
+                            <th data-sort="status">Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- Inventory items will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Edit Item</h3>
+                <button class="modal__close" id="closeEditModal">&times;</button>
+            </div>
+            <div class="modal__body">
+                <form id="editItemForm">
+                    <input type="hidden" id="editItemId">
+                    <div class="form-group">
+                        <label class="form-label" for="editMarketPrice">Market Price (CAD)</label>
+                        <input type="number" id="editMarketPrice" class="form-control" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editQuantity">Quantity</label>
+                        <input type="number" id="editQuantity" class="form-control" min="0" step="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button type="button" class="btn btn--secondary" id="cancelEdit">Cancel</button>
+                <button type="submit" form="editItemForm" class="btn btn--primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
